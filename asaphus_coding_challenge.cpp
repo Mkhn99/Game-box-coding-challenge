@@ -56,13 +56,60 @@ class Box {
   static std::unique_ptr<Box> makeBlueBox(double initial_weight);
   bool operator<(const Box& rhs) const { return weight_ < rhs.weight_; }
 
+  double getScore() const { return score_; }
+  double getWeight() const { return weight_; }
+  void calculateScore(double weight);
+
   BoxColor getBoxColor() const { return color_; }
-	void setBoxColor(BoxColor newColor) { color_ = newColor; }
+  void setBoxColor(BoxColor newColor) { color_ = newColor; }
 
  protected:
   double weight_;
+  double score_{0.0};
   BoxColor color_ = BoxColor::BLUE;
+  std::vector<double> accumulated_weights_;
 };
+
+//Score calculation after weight absorption
+void Box::calculateScore(double weight) {
+
+	if (this->getBoxColor() == BoxColor::BLUE) {
+
+		if (accumulated_weights_.empty()) {
+			//adding first element
+			accumulated_weights_.emplace_back(weight);
+		}
+		else {
+		accumulated_weights_.emplace_back(weight);
+		std::sort(accumulated_weights_.begin(), accumulated_weights_.end());
+
+		}
+
+		auto smallest_item = accumulated_weights_.front();
+		auto largest_item = accumulated_weights_.back();
+		//Cantor's pairing function calculation of the smallest and the largest weight
+		score_ = ((smallest_item + largest_item) * (smallest_item + largest_item + 1)) / 2 + largest_item;
+		this->weight_ += weight;
+
+	}
+	else {
+
+       accumulated_weights_.emplace_back(weight);
+	    double mean = 0.0;
+		auto last_item_ = accumulated_weights_.end();
+		if (accumulated_weights_.size() >= 3) {
+			//When box absorbed 3 or more weights, mean calculation
+			mean = (*(last_item_ -1) + *(last_item_ -2) + *(last_item_ -3))/3.0;
+		}
+		else {
+			//When box absorbed less than 3 weights, mean calculation
+			mean = (*(last_item_ -1) + *accumulated_weights_.begin())/2.0;
+		}
+
+		score_ = std::pow(mean, 2);
+		this->weight_ += weight;
+	}
+}
 
 //Initializing a green box
 std::unique_ptr<Box> Box::makeGreenBox(double initial_weight) {
@@ -82,8 +129,14 @@ class Player {
  public:
   void takeTurn(uint32_t input_weight,
                 const std::vector<std::unique_ptr<Box> >& boxes) {
-    // TODO
+        //finding the box with the lowest weight
+		auto minimum_wight_box = std::min_element(boxes.begin(), boxes.end(), [](auto& a, auto& b) {
+			return *a < *b;
+			});
+		(*minimum_wight_box)->calculateScore(static_cast<double>(input_weight));
+		score_ += (*minimum_wight_box)->getScore();
   }
+
   double getScore() const { return score_; }
 
  private:
