@@ -203,3 +203,20 @@ TEST_CASE("Test absorption of blue box", "[blue]") {
 		REQUIRE(blueBox->getScore() == expected_scores[i]);
 	}
 }
+
+TEST_CASE("Test absorption of green box with zero weights", "[greenwithzero]") {
+	std::unique_ptr<Box> green_box = Box::makeGreenBox(0.0);
+	REQUIRE(green_box->getScore() == 0.0);
+}
+
+TEST_CASE("Test absorption of blue box with zero weights", "[bluewithzero]") {
+	std::unique_ptr<Box> blue_box = Box::makeBlueBox(0.0);
+	REQUIRE(blue_box->getScore() == 0.0);
+}
+
+TEST_CASE("Test play logic with zero weights", "[playwithzero]") {
+	std::vector<uint32_t> inputs{0};
+	auto result = play(inputs);
+	REQUIRE(result.first == 0.0);
+	REQUIRE(result.second == 0.0);
+}
