@@ -183,9 +183,23 @@ TEST_CASE("Final scores for first 8 Fibonacci numbers", "[fibonacci8]") {
 }
 
 TEST_CASE("Test absorption of green box", "[green]") {
-  // TODO
+  	std::vector<uint32_t> inputs{ 1, 2, 3, 4 };
+	std::unique_ptr<Box> greenBox = Box::makeGreenBox(0.0);
+	double expected_scores[] = { 1.0, 2.25, 4.0, 9.0 };
+
+	for (size_t i = 0; i < inputs.size(); ++i) {
+		greenBox->calculateScore(inputs[i]);
+		REQUIRE(greenBox->getScore() == expected_scores[i]);
+	}
 }
 
 TEST_CASE("Test absorption of blue box", "[blue]") {
-  // TODO
+  	std::vector<uint32_t> inputs{ 1, 2, 3, 4 };
+	std::unique_ptr<Box> blueBox = Box::makeBlueBox(0.2);
+	double expected_scores[] = { 4, 12, 32, 19 };
+
+	for (size_t i = 0; i < 1; ++i) {
+		blueBox->calculateScore(inputs[i]);
+		REQUIRE(blueBox->getScore() == expected_scores[i]);
+	}
 }
