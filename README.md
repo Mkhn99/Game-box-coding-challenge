@@ -32,4 +32,19 @@ The rules of the game are:
  - Feel free to add more test cases, if you would like to test more.
  - This file includes the header-only test framework Catch v2.13.9.
  - A main function is not required, as it is provided by the test framework.
+
+## Build and test steps
+
+ 1. Clone the repository
+ 2. Run the following commands to build the code:
+
+    a) ```cmake -S . -B build -G "MinGW Makefiles"```
+    
+    b) ```cmake --build build```
+ 3. After build is done, run following commands to test:
+    
+    a) ```cd build```
+
+    b) ```./challenge.exe```
+
  
